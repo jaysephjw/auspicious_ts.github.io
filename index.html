@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Auspicious Timestamp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=JetBrains+Mono:wght@100;400;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0908;
+    }
+
+    #tp-wrap {
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3rem 2rem;
+      text-align: center;
+      background: #0a0908;
+      transition: background 2s ease;
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #tp-wrap.achieved {
+      background: #f0e8d0;
+    }
+
+    .tp-stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .star {
+      fill: #c8a84b;
+      animation: tp-twinkle var(--d) ease-in-out infinite var(--delay);
+      opacity: 0;
+    }
+
+    @keyframes tp-twinkle {
+      0%, 100% { opacity: 0 }
+      50% { opacity: var(--op) }
+    }
+
+    .tp-sigil {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .tp-sigil svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .sigil-outer {
+      transform-origin: 60px 60px;
+      animation: rot 40s linear infinite;
+    }
+
+    .sigil-inner {
+      transform-origin: 60px 60px;
+      animation: rot-rev 28s linear infinite;
+    }
+
+    @keyframes rot { to { transform: rotate(360deg); } }
+    @keyframes rot-rev { to { transform: rotate(-360deg); } }
+
+    .tp-label {
+      font-family: 'UnifrakturMaguntia', serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      letter-spacing: 0.12em;
+      color: #8a7a60;
+      margin-bottom: 0.5rem;
+      transition: color 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-label { color: #4a3f2f; }
+
+    .tp-digits {
+      font-size: clamp(4rem, 12vw, 9rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: center;
+      gap: 0.02em;
+    }
+
+    .tp-digit {
+      color: #4a4030;
+      transition: color 0.6s ease;
+    }
+
+    .tp-digit.lit { color: #e8c46a; }
+
+    #tp-wrap.achieved .tp-digit { color: #b0a080; }
+
+    #tp-wrap.achieved .tp-digit.lit {
+      color: #1a1208;
+      animation: tp-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes tp-pulse {
+      0%, 100% { opacity: 1 }
+      50% { opacity: 0.35 }
+    }
+
+    .tp-orn {
+      font-family: 'UnifrakturMaguntia', serif;
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      color: #7a6a50;
+      letter-spacing: 0.25em;
+      margin: 0.5rem 0 0;
+      transition: color 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-orn { color: #7a6a50; }
+
+    .tp-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 2.5rem auto;
+      color: #7a6a50;
+      font-size: 20px;
+      transition: color 2s ease;
+    }
+
+    .tp-divider-line {
+      flex: 1;
+      max-width: 120px;
+      height: 1px;
+      background: #7a6a50;
+      transition: background 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-divider { color: #8a7a60; }
+    #tp-wrap.achieved .tp-divider-line { background: #8a7a60; }
+
+    .tp-current {
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-weight: 800;
+      color: #c8b880;
+      letter-spacing: 0.08em;
+      transition: color 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-current { color: #7a6a50; }
+
+    .tp-progress-wrap {
+      margin: 2rem auto 0;
+      max-width: 550px;
+      width: 80%;
+    }
+
+    .tp-progress-bar {
+      height: 2px;
+      background: #4a4030;
+      margin: 0.6rem 0;
+      transition: background 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-progress-bar { background: #8a7a60; }
+
+    .tp-progress-fill {
+      height: 100%;
+      background: #e8c46a;
+      transition: width 0.5s ease, background 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-progress-fill { background: #1a1208; }
+
+    .tp-progress-label {
+      font-family: 'UnifrakturMaguntia', serif;
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      letter-spacing: 0.1em;
+      color: #8a7a60;
+      transition: color 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-progress-label { color: #7a6a50; }
+
+    .tp-countdown {
+      margin-top: 1.5rem;
+      font-size: clamp(0.9rem, 2vw, 1.3rem);
+      letter-spacing: 0.18em;
+      color: #8a7a60;
+      text-transform: uppercase;
+      transition: color 2s ease;
+    }
+
+    #tp-wrap.achieved .tp-countdown { color: #7a6a50; }
+
+    .tp-achieved-msg {
+      font-family: 'UnifrakturMaguntia', serif;
+      margin-top: 1.5rem;
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      letter-spacing: 0.2em;
+      color: #e8c46a;
+      opacity: 0;
+      transition: opacity 3s ease, color 2s ease;
+    }
+
+    .tp-achieved-msg.visible { opacity: 1; }
+    #tp-wrap.achieved .tp-achieved-msg { color: #3a2a10; }
+
+    .tp-test-btn {
+      margin-top: 3rem;
+      background: none;
+      border: 1px solid transparent;
+      color: transparent;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+      cursor: default;
+      border-radius: 2px;
+      transition: color 0.4s, border-color 0.4s;
+      display: inline-block;
+    }
+
+    .tp-test-btn:hover {
+      color: #8a7a60;
+      border-color: #7a6a50;
+      cursor: pointer;
+    }
+
+    .tp-test-btn:hover {
+      color: #e8c46a;
+      border-color: #e8c46a;
+    }
+  </style>
+</head>
+<body>
+  <div id="tp-wrap">
+    <svg class="tp-stars" id="tp-stars" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></svg>
+
+    <div class="tp-sigil">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <g class="sigil-outer">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="#2a2010" stroke-width="0.5" />
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#c8a84b" stroke-width="0.3" stroke-dasharray="3 8" />
+          <polygon points="60,8 112,90 8,90" fill="none" stroke="#c8a84b" stroke-width="0.5" opacity="0.6" />
+        </g>
+        <g class="sigil-inner">
+          <circle cx="60" cy="60" r="36" fill="none" stroke="#2a2010" stroke-width="0.5" />
+          <polygon points="60,26 91,77 29,77" fill="none" stroke="#3a3020" stroke-width="0.5" opacity="0.8" transform="rotate(180,60,60)" />
+        </g>
+        <circle cx="60" cy="60" r="18" fill="none" stroke="#c8a84b" stroke-width="0.5" opacity="0.5" />
+        <circle cx="60" cy="60" r="3" fill="#c8a84b" opacity="0.7" />
+        <line x1="60" y1="42" x2="60" y2="20" stroke="#c8a84b" stroke-width="0.4" opacity="0.5" />
+        <line x1="60" y1="78" x2="60" y2="100" stroke="#c8a84b" stroke-width="0.4" opacity="0.5" />
+        <line x1="42" y1="60" x2="20" y2="60" stroke="#c8a84b" stroke-width="0.4" opacity="0.5" />
+        <line x1="78" y1="60" x2="100" y2="60" stroke="#c8a84b" stroke-width="0.4" opacity="0.5" />
+      </svg>
+    </div>
+
+    <div class="tp-label">the auspicious timestamp</div>
+    <div class="tp-digits" id="tp-target"></div>
+    <div class="tp-orn">&#x2741; nines of sevens &#x2741;</div>
+
+    <div class="tp-progress-wrap">
+      <div class="tp-progress-bar">
+        <div class="tp-progress-fill" id="tp-fill" style="width:0%"></div>
+      </div>
+      <div class="tp-progress-label" id="tp-plabel">— of ten seals</div>
+    </div>
+
+    <div class="tp-divider">
+      <div class="tp-divider-line"></div>
+      <span>&#x2736;</span>
+      <div class="tp-divider-line"></div>
+    </div>
+
+    <div class="tp-label" style="font-family:'JetBrains Mono',monospace;font-size:clamp(0.9rem,2vw,1.2rem);letter-spacing:0.2em;">current unix time</div>
+    <div class="tp-current" id="tp-now"></div>
+
+    <div class="tp-countdown" id="tp-countdown"></div>
+    <div class="tp-achieved-msg" id="tp-achieved-msg">the conjunction is complete</div>
+
+    <button class="tp-test-btn" id="tp-test-btn">test achievement</button>
+  </div>
+
+  <script>
+    const TARGET = "1777777777";
+    const TARGET_NUM = 1777777777;
+
+    const wrap = document.getElementById("tp-wrap");
+    const nowEl = document.getElementById("tp-now");
+    const fillEl = document.getElementById("tp-fill");
+    const plabelEl = document.getElementById("tp-plabel");
+    const countdownEl = document.getElementById("tp-countdown");
+    const achievedMsg = document.getElementById("tp-achieved-msg");
+    const testBtn = document.getElementById("tp-test-btn");
+
+    let achieved = false;
+    let timeOffset = 0;
+
+    const spans = TARGET.split("").map(d => {
+      const s = document.createElement("span");
+      s.className = "tp-digit";
+      s.textContent = d;
+      document.getElementById("tp-target").appendChild(s);
+      return s;
+    });
+
+    const starsEl = document.getElementById("tp-stars");
+    for (let i = 0; i < 45; i++) {
+      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("cx", (Math.random() * 100) + "%");
+      c.setAttribute("cy", (Math.random() * 100) + "%");
+      c.setAttribute("r", 0.4 + Math.random() * 1.1);
+      c.classList.add("star");
+      c.style.setProperty("--d", (3 + Math.random() * 5).toFixed(1) + "s");
+      c.style.setProperty("--op", (0.15 + Math.random() * 0.5).toFixed(2));
+      c.style.setProperty("--delay", -(Math.random() * 6).toFixed(1) + "s");
+      starsEl.appendChild(c);
+    }
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function getNow() { return Math.floor((Date.now() + timeOffset) / 1000); }
+
+    function doAchieve() {
+      achieved = true;
+      spans.forEach(s => s.classList.add("lit"));
+      fillEl.style.width = "100%";
+      plabelEl.textContent = "all ten seals broken";
+      countdownEl.textContent = "";
+      achievedMsg.classList.add("visible");
+      setTimeout(() => wrap.classList.add("achieved"), 300);
+    }
+
+    testBtn.addEventListener("click", () => {
+      timeOffset = (TARGET_NUM - Math.floor(Date.now() / 1000) - 5) * 1000;
+      testBtn.style.display = "none";
+    });
+
+    wrap.addEventListener("dblclick", () => { testBtn.style.display = "none"; });
+
+    function tick() {
+      const nowSec = getNow();
+      const nowStr = String(nowSec);
+      nowEl.textContent = nowStr;
+
+      if (!achieved) {
+        let lit = 0;
+        for (let i = 0; i < TARGET.length; i++) {
+          const match = i < nowStr.length && nowStr[i] === TARGET[i];
+          spans[i].classList.toggle("lit", match);
+          if (match) lit++;
+        }
+        fillEl.style.width = (lit / TARGET.length * 100) + "%";
+        if (lit === TARGET.length) { doAchieve(); return; }
+        plabelEl.textContent = lit + " of ten seals";
+
+        const diff = (TARGET_NUM * 1000) - (Date.now() + timeOffset);
+        if (diff > 0) {
+          const d = Math.floor(diff / 86400000);
+          const h = Math.floor((diff % 86400000) / 3600000);
+          const m = Math.floor((diff % 3600000) / 60000);
+          const s = Math.floor((diff % 60000) / 1000);
+          countdownEl.textContent = d + "d " + pad(h) + "h " + pad(m) + "m " + pad(s) + "s until the conjunction";
+        } else {
+          countdownEl.textContent = "the moment has passed";
+        }
+      }
+    }
+
+    tick();
+    setInterval(tick, 200);
+  </script>
+</body>
+</html>
